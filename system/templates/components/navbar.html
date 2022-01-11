@@ -1,0 +1,45 @@
+<!--header-->
+<header class="nav">
+    <nav class="nav-menu">
+        <div class="nav-brand">
+            <a href="{% url 'home' %}"><img src="../../static/assets/logo.png" alt="Studio Shine Logo" height="50px" width="200px"></a>
+        </div>
+        <div class="datetime">
+            <div class="date">
+                <span id="dayname">Day,</span>
+                <span id="month">Month</span>
+                <span id="daynum">00</span>
+                <span id="year">Year</span>
+            </div>
+            <div class="time">
+                <span id="hour">00</span>
+                <span>:</span>
+                <span id="minutes">00</span>
+                <span>:</span>
+                <span id="seconds">00</span>
+                <span id="period">AM</span>
+            </div>
+        </div>
+
+        <div class="nav-items">
+            {% if request.user.is_anonymous %}
+            <div class="nav-link"><a href="javascript:;" data-modal-target="#login-modal">Login</a></div>
+            {% else %}
+            <div class="nav-link" id="nav-inventory"><a href="{% url 'inventory' %}">Inventory</a></div>
+            <div class="nav-link" id="nav-purchase"><a href="{% url 'purchase' %}">Purchase Items</a></div>
+            <div class="nav-link" id="nav-sell"><a href="{% url 'sell' %}">Sell Items</a></div>
+            <div class="nav-link" id="nav-employee"><a href="{% url 'employees' %}">Employees</a></div>
+            <div class="nav-link logout"><a href="javascript:;" onclick="document.getElementById('logout-btn').click();">Logout</a></div>
+            {% endif %}
+        </div>
+        <div class="toggle-collapse">
+            <div class="toggle-icons">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+        <form action="." method="POST" hidden="true">
+            {% csrf_token %}
+            <input type="submit" id="logout-btn" name="logout">
+        </form>
+    </nav>
+</header>  

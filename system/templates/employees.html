@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="content">
+    <div class="table_item">
+        <!--all employee-->
+        <table>
+            <thead>
+            <tr>
+                <th class="col">#</th>
+                <th class="col">Username</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Gender</th>
+                {% if control and me.username != user.0 %}
+                <th scope="col">Action</th>
+                {% endif %}
+            </tr>
+            </thead>
+            {% for user in employee_table %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                {% if me.username == user.0 %}
+                <td class="align-left"><a class="button" href="javascript:;" data-modal-target="#my-detail-modal">{{ user.0 }}</a></td>
+                {% else %}
+                <td class="align-left">{{ user.0 }}</td>
+                {% endif %}
+                <td class="align-left">{{ user.1 }}</td>
+                <td class="align-left">{{ user.2 }}</td>
+                <td class="align-left">{{ user.3 }}</td>
+                <td>{{ user.4 }}</td>
+                <td>{{ user.5 }}</td> 
+                {% if control %}
+                <td>
+                    {% if control and me.username != user.0 %}
+                    <div><a class="button" href="javascript:;" data-modal-target="#remove-member-modal" onclick="removeUser('{{user.0}}')">Remove</a></div>
+                    {% endif %}
+                </td>
+                {% endif %}
+                
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {% if control %}
+    <div class="item">
+        <a class="normal-link" href="javascript:;" data-modal-target="#register-member-modal">Register an Employee</a>
+    </div>
+    {% endif %}
+</div>
+
+
+<!--my detail-->
+<div class="modal" id="my-detail-modal">
+    <div class="modal-header">
+        <div class="title">My details</div>
+        <button data-close-button class="close-button">&times;</button>
+    </div>
+        <div class="form">
+            <div class="item">
+                <form action="." method="POST" role="form">
+                    {% csrf_token %}
+                    <div class="single-item">
+                        <label for="first_name">First Name</label>
+                        <input type="text" name="first_name" value='{{me.first_name}}'>
+                    </div>
+                
+                    <div class="single-item">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" name="last_name" value='{{me.last_name}}'>
+                    </div>
+                
+                    <div class="single-item">
+                        <label for="address">Address</label>
+                        <input type="text" name="address" value='{{me.address}}'>
+                    </div>
+                
+                    <div class="single-item">
+                        <label for="phone_number">Phone No.</label>
+                        <input type="text" name="phone_number" value='{{me.phone_number}}'>
+                    </div>
+                
+                    <div class="single-item">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" value='{{me.email}}'>
+                    </div>
+                
+                    <div class="single-item">
+                        <label for="gender">Gender</label>
+                    </div>
+                
+                        <div class="radio-box">
+                            {% if me.gender == 'MALE' %}
+                        
+                                <input type="radio" name="gender" id="male" value="MALE" checked>
+                                <span for="male">MALE</span>
+                        
+                                <input type="radio" name="gender" id="female" value="FEMALE">
+                                <span for="female">FEMALE</span>
+                        
+                            {% elif me.gender == 'FEMALE' %}
+                        
+                                <input type="radio" name="gender" id="male" value="MALE">
+                                <span for="male">MALE</span>
+                        
+                        
+                                <input type="radio" name="gender" id="female" value="FEMALE" checked>
+                                <span for="female">FEMALE</span>
+                        
+                            {% else %}
+                        
+                                <input type="radio" name="gender" id="male" value="MALE">
+                                <span for="male">MALE</span>
+                        
+                        
+                                <input type="radio" name="gender" id="female" value="FEMALE">
+                                <span for="female">FEMALE</span>
+                        
+                            {% endif %}
+                        </div>
+
+                    <div class="form-btn">
+                        <input type="submit" value="Save" name="edit_user">
+                    </div>
+                </form>
+            </div>
+            <div class="item to-border">
+            <!--change my password-->
+                <form action="." method="POST" role="form">
+                    {% csrf_token %}
+                
+                    <div class="single-item">
+                        <label for="old_password">Old Password : </label>
+                        <input type="password" name="old_password" required>
+                    </div>
+                
+                    <div class="single-item">
+                        <label for="new_password1">New Password : </label>
+                        <input type="password" name="new_password1" required>
+                    </div>
+                
+                    <div class="single-item">
+                        <label for="new_password2">Confirm Password : </label>
+                        <input type="password" name="new_password2" required>
+                    </div>
+                
+                    <div class="form-btn">
+                        <input type="submit" name="change_password" value="Change Password">
+                    </div>
+                </form> 
+            </div>
+        </div>
+    <div class="modal-body">
+
+    </div>
+</div>
+<div id="overlay"></div>
+
+
+
+<!--register employee-->
+<div class="modal" id="register-member-modal">
+    <div class="modal-header">
+        <div class="title">Register Member</div>
+        <button data-close-button class="close-button">&times;</button>
+    </div>
+    <form action="." method="POST" role="form">
+        {% csrf_token %}
+        <div class="form">
+            <div class="item">
+                <div class="form-group">
+                    <div class="single-item">
+                        <label><b>Username : </b></label>
+                        {{ form.username }}
+                        <p><small>150 characters or fewer. Letters, digits and @/./+/-/_ only.</small></p>
+                    </div>
+            
+                    <div class="single-item">
+                        <label><b>Password : </b></label>
+                        {{ form.password1 }}
+                        <p>
+                            <small>
+                                <ul>
+                                    <li>Password can’t be too similar to your other personal information.</li>
+                                    <li>Password must contain at least 8 characters.</li>
+                                    <li>Password can’t be a commonly used password.</li>
+                                    <li>Password can’t be entirely numeric.</li>
+                                </ul> 
+                            </small> 
+                        </p>
+                    </div>
+        
+                    <div class="single-item">
+                        <label><b>Confirm Password : </b></label>
+                        {{ form.password2 }}
+                        <p><small>Enter the same password as before, for verification.</small></p>
+                    </div>
+            
+                    <div class="form-btn">
+                        <input type="submit" value="Register" name="register_user">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>    
+    <div class="modal-body">
+
+    </div>
+</div>
+<div id="overlay"></div>
+
+
+<!--remove member-->
+
+<div class="modal" id="remove-member-modal">
+    <div class="modal-header">
+        <div class="title">Remove Member</div>
+        <button data-close-button class="close-button">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+        <form action="" method="POST" role="form">
+            {% csrf_token %}
+            <p id="to-remove-user"></p>
+            <input id="label-to-remove-user" name="label-to-remove-user" type="text" value="" hidden>
+            <div class="form-btn">
+                <input type="submit" value="Yes" name="remove_user">
+            </div>
+        </form>
+    </div>
+</div>
+<div id="overlay"></div>
+
+{% endblock content %}

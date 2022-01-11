@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="content">
+    <form id="sales-form" action="." method="POST" role="form" novalidate>
+        {% csrf_token %}
+    
+        <div class="form">
+            <div class="item">
+                <div class="single-item">
+                    <label for="item_data">Product Code</label>
+                    <div id="items">                          
+                        <select name="item-data" id="item-data" required>
+                            <option value="" selected disabled hidden>Select item</option>
+                            {% for item in item_list %}
+                            <option value="{{ item.product_code }}">{{ item.product_code }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <small class="form-error-handle">Error message</small>
+                </div>
+
+                <div class="single-item">
+                    <label class="form-label" for="category">Category</label>
+                    <input class="form-input" type="text" name="category" id="category" readonly>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+
+                <div class="single-item">
+                    <label for="color">Color</label>
+                    <input type="text" name="color" id="color" readonly>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+
+        
+                <div class="single-item">
+                    <label for="description">Description</label>
+                    <input type="text" name="description" id = "description" readonly>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+                
+                <div class="single-item">
+                    <label for="selling_price">Selling Price</label>
+                    <input type="decimal" name="selling_price" id = "selling_price" class="inputs">
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="qty">Qty</label>
+                    <input type="number" name="qty" id = "qty" oninput="tot()" class="inputs" required>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="total">Total</label>
+                    <input type="decimal" name="total" id = "total" readonly>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+            </div>
+        
+            <div class="item group">
+                <p>Customer Details (Optional)</p>
+                                
+                <div class="single-item">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name">
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" id="address">
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" name="phone_number" id="phone_number">
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+                
+            </div>
+        </div>
+        <div class="form-btn">
+            <button type="submit" name="sell-items">Submit</button>
+        </div>
+    
+    </form>
+
+</div>
+
+{% endblock content %}

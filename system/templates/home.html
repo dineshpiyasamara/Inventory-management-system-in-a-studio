@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="content">
+    <div class="home-title">
+        <h1>Welcome to Studio Shine</h1>
+    </div>
+    <img class="home-img" src="../../static/assets/home.png" alt="Studio Shine Home">
+</div>
+
+<!--modals-->
+
+<div class="modal" id="login-modal">
+    <div class="modal-header">
+        <div class="title">Login</div>
+        <button data-close-button class="close-button">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+        <form action="." role="form" method="POST">
+            {% csrf_token %}
+            <div class="form">
+                <div class="item">
+                    <div class="single-item">
+                        <label for="username">Username</label>
+                        <input type="text" name="username">
+                    </div>
+                
+                    <div class="single-item">
+                        <label for="password">Password</label>
+                        <input type="password" name="password">
+                    </div>
+                
+                    <div class="form-btn">
+                        <input type="submit" name="login" value="Login">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="overlay"></div>
+
+{% endblock content %}

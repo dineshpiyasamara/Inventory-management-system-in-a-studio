@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="content">
+    <div class="item">
+        <input class="search" type="text" id="myInput" name="search" placeholder="Search Product Code" onkeyup="tableSearch()">
+    </div>
+               
+    <div class="table_item">
+        <table id="myTable" data-filter-control='true' data-show-search-clear-button='true'>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Product Code</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Color</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Purchase price</th>
+                    <th scope="col">Selling price</th>
+                    <th scope="col">Qty</th>
+                </tr>
+            </thead>
+            {% for item in item_table %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td class="align-left">{{ item.0 }}</td>
+                <td class="align-left">{{ item.1 }}</td>
+                <td class="align-left">{{ item.2 }}</td>
+                <td class="align-left">{{ item.3 }}</td>
+                <td>{{ item.4 }}</td>
+                <td><a class="button" href="javascript:;" onclick="changeSellingPrice('{{item.0}}','{{item.5}}')" data-modal-target="#change-selling-price-modal">{{ item.5 }}</a></td>
+                <td>{{ item.6 }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+
+<!--change selling price-->
+<div class="modal" id="change-selling-price-modal">
+    <div class="modal-header">
+        <div class="title">Change Selling Price</div>
+        <button data-close-button class="close-button">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+        <form action="." method="POST" role="form">
+            {% csrf_token %}
+            <div class="form">
+                <div class="item">
+                    <div class="single-item">
+                        <label for="product_code">Product Code</label>
+                        <input value="" type="text" name="product_code" id="product_code" readonly>
+                    </div>
+            
+                    <div class="single-item">
+                        <label for="selling_price">Selling Price</label>
+                        <input value="" type="decimal" name="selling_price" id="selling_price" readonly>
+                    </div>
+            
+                    <div class="single-item">
+                        <label for="price">New Selling Price</label>
+                        <input type="decimal" name="price" id="price" required>
+                    </div>
+            
+                    <div class="form-btn">
+                        <input type="submit" value="Save" name="change_selling_price">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="overlay"></div>
+
+{% endblock content %}

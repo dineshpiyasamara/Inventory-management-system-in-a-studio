@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="content">
+    <form id="purchase-form" action="." method="POST" role="form" novalidate>
+        {% csrf_token %}
+
+        <div class="form" id="form">
+    
+            <div class="item">
+                <div class="single-item">
+                    <label for="product_code">Product Code</label>
+                    <input type="text" name="product_code" id="product_code" required>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small class="form-error-handle">Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="category">Category</label>
+                    <input class="autocomplete" type="text" name="category" id="category" required>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="color">Color</label>
+                    <input type="text" name="color" id="color">
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="description">Description</label>
+                    <input type="text" name="description" id="description">
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="purchase_price">Purchase Price</label>
+                    <input type="decimal" name="purchase_price" id="purchase_price" required>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="selling_price">Selling Price</label>
+                    <input type="decimal" name="selling_price" id="selling_price" required>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="qty">Qty</label>
+                    <input type="number" name="qty" id="qty" required>
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+            </div>
+        
+        
+        
+            <div class="item group">
+                <p>Supplier Details (Optional)</p>
+                                
+                <div class="single-item">
+                    <label for="organization">Organization</label>
+                    <input type="text" name="organization" id="organization">
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" id="address">
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+        
+                <div class="single-item">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" name="phone_number" id="phone_number">
+                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                    <small>Error message</small>
+                </div>
+            </div>
+        </div>
+        <div class="form-btn">
+            <button type="submit" name="purchase-items">Submit</button>
+        </div>
+    </form>
+</div>
+
+ <script>
+$( function() {
+
+    var availableTags = [
+        '{% for item in item_list %}',
+            "{{item.product_code}}",
+        '{% endfor %}'
+    ];
+    $( "#product_code" ).autocomplete({
+      source: availableTags,
+    });
+
+    $(document).on('focus', '.autocomplete', fillPurchase);
+  } );  
+
+</script> 
+
+
+{% endblock content %}
