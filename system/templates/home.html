@@ -5,9 +5,17 @@
 <div class="content">
     <div class="home-title">
         <h1>Welcome to Studio Shine</h1>
+
     </div>
+
     <img class="home-img" src="../../static/assets/home.png" alt="Studio Shine Home">
+    {% if request.user.is_anonymous %}
+    {% else %}
+        <a class="button" href="javascript:;" data-modal-target="#report-modal" type="submit">Generate Report</a>
+    {% endif %}
 </div>
+
+
 
 <!--modals-->
 
@@ -35,6 +43,37 @@
                     <div class="form-btn">
                         <input type="submit" name="login" value="Login">
                     </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="overlay"></div>
+
+
+<div class="modal" id="report-modal">
+    <div class="modal-header">
+        <div class="title">Generate Report</div>
+        <button data-close-button class="close-button">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+        <form action="." role="form" method="POST">
+            {% csrf_token %}
+            <div class="form">
+                <div class="item">
+                
+                    <div class="single-item">
+                    <select name="report-data" id="report-data" required>
+                        <option value="" selected disabled hidden>Select Report</option>
+                        <option value="p">Purchases</option>
+                        <option value="s">Sales</option>
+                    </select>
+                    </div>
+
+                    <div class="form-btn">
+                        <input type="submit" name="report" value="Generate">
+                    </div> 
                 </div>
             </div>
         </form>

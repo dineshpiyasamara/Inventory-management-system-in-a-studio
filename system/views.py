@@ -9,6 +9,9 @@ from django.db.models import Sum
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.db import connection
+from django.http import HttpResponse
+import csv
 
 
 def home(request):
@@ -27,6 +30,39 @@ def home(request):
                 messages.success(request, msg)
             return HttpResponseRedirect(request.path)
 
+        elif "report" in request.POST:
+            report = request.POST.get('report-data')
+            if report == 'p':
+                cursor = connection.cursor()
+                cursor.execute("SELECT p.date, i.product_code, i.category, i.purchase_price, p.qty, s.organization, s.address, s.phone_number, u.username FROM system_purchases p INNER JOIN system_suppliers s ON p.supplier_id_id = s.id INNER JOIN auth_user u ON p.employee_id_id=u.id INNER JOIN system_item i ON p.product_code_id = i.product_code")
+                results = cursor.fetchall()
+
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename=purchase_data.csv'
+
+                writer = csv.writer(response)
+                writer.writerow(['Date', 'Product Code', 'Category', 'Purchase Price',
+                                'Qty', 'Organization', 'Address', 'Phone Number', 'Username'])
+                for t in results:
+                    writer.writerow(t)
+                return response
+
+            if report == 's':
+                cursor = connection.cursor()
+                cursor.execute("SELECT s.date, i.product_code, i.category, s.qty, c.name, c.address, c.phone_number, u.username FROM system_sales s INNER JOIN system_item i ON i.product_code = s.product_code_id INNER JOIN auth_user u ON s.employee_id_id=u.id INNER JOIN system_customers c ON s.customer_id_id = c.id")
+                results = cursor.fetchall()
+
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename=sales_data.csv'
+
+                writer = csv.writer(response)
+                writer.writerow(['Date', 'Product Code', 'Category',
+                                'Qty', 'Customer Name', 'Address', 'Phone Number', 'Username'])
+                for t in results:
+                    writer.writerow(t)
+                return response
+            return HttpResponseRedirect(request.path)
+
         elif "logout" in request.POST:
             msg = f"{request.user} logged out..."
             logout(request)
@@ -42,7 +78,9 @@ def inventory(request):
             product_code = request.POST.get('product_code')
             new_price = request.POST.get('price')
 
-            item_obj = Item.objects.get(product_code=product_code)
+            # item_obj = Item.objects.get(product_code=product_code)
+            item_obj = Item.objects.raw(
+                "SELECT * FROM system_item WHERE product_code="+product_code)
             selling_price_obj = SellingPrice(
                 item=item_obj, selling_price=new_price)
             try:
@@ -63,8 +101,11 @@ def inventory(request):
             messages.success(request, msg)
             return redirect('home')
 
-    item_table = Item.objects.all()
-    selling_price_table = SellingPrice.objects.all()
+    # item_table = Item.objects.all()
+    item_table = Item.objects.raw("SELECT * FROM system_item")
+    # selling_price_table = SellingPrice.objects.all()
+    selling_price_table = SellingPrice.objects.raw(
+        "SELECT * FROM system_sellingprice")
 
     datalist = []
     for item in item_table:
@@ -92,6 +133,11 @@ def inventory(request):
             product_code=item.product_code).aggregate(Sum('qty'))
         sales_tot = Sales.objects.filter(
             product_code=item.product_code).aggregate(Sum('qty'))
+
+        # purchases_tot = Purchases.objects.raw(
+        #     "SELECT SUM(qty) FROM system_purchases WHERE product_code_id="+item.product_code)
+        # sales_tot = Sales.objects.raw(
+        #     "SELECT SUM(qty) FROM system_sales WHERE product_code_id="+item.product_code)
 
         if purchases_tot['qty__sum'] == None:
             purchases_tot['qty__sum'] = 0
@@ -190,8 +236,6 @@ def purchase(request):
             org = request.POST.get('organization')
             address = request.POST.get('address')
             phone = request.POST.get('phone_number')
-
-            print(prod)
 
             item_obj = Item(product_code=prod, category=cat,
                             color=col, description=des, purchase_price=purch)
