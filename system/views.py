@@ -129,22 +129,35 @@ def inventory(request):
                 price = sell.selling_price
         data.append(price)
 
-        purchases_tot = Purchases.objects.filter(
-            product_code=item.product_code).aggregate(Sum('qty'))
-        sales_tot = Sales.objects.filter(
-            product_code=item.product_code).aggregate(Sum('qty'))
+        # purchases_tot = Purchases.objects.filter(
+        #     product_code=item.product_code).aggregate(Sum('qty'))
+        # sales_tot = Sales.objects.filter(
+        #     product_code=item.product_code).aggregate(Sum('qty'))
 
-        # purchases_tot = Purchases.objects.raw(
-        #     "SELECT SUM(qty) FROM system_purchases WHERE product_code_id="+item.product_code)
-        # sales_tot = Sales.objects.raw(
-        #     "SELECT SUM(qty) FROM system_sales WHERE product_code_id="+item.product_code)
+        # if purchases_tot[0][0] == None:
+        #     purchases_tot[0][0] = 0
+        # if sales_tot[0][0] == None:
+        #     sales_tot[0][0] = 0
 
-        if purchases_tot['qty__sum'] == None:
-            purchases_tot['qty__sum'] = 0
-        if sales_tot['qty__sum'] == None:
-            sales_tot['qty__sum'] = 0
+        cursor = connection.cursor()
 
-        data.append(purchases_tot['qty__sum'] - sales_tot['qty__sum'])
+        cursor.execute(
+            "SELECT SUM(qty) FROM system_purchases WHERE product_code_id='"+item.product_code+"'")
+        purchases_tot = cursor.fetchall()
+
+        cursor.execute(
+            "SELECT SUM(qty) FROM system_sales WHERE product_code_id='"+item.product_code+"'")
+        sales_tot = cursor.fetchall()
+
+        purchase_val = purchases_tot[0][0]
+        sales_val = sales_tot[0][0]
+
+        if purchase_val == None:
+            purchase_val = 0
+        if sales_val == None:
+            sales_val = 0
+
+        data.append(purchase_val - sales_val)
 
         datalist.append(data)
 
@@ -163,17 +176,33 @@ def sell(request):
             prod = request.POST.get('item-data')
             qty = request.POST.get('qty')
 
-            purchases_tot = Purchases.objects.filter(
-                product_code=prod).aggregate(Sum('qty'))
-            sales_tot = Sales.objects.filter(
-                product_code=prod).aggregate(Sum('qty'))
+            # purchases_tot = Purchases.objects.filter(
+            #     product_code=prod).aggregate(Sum('qty'))
+            # sales_tot = Sales.objects.filter(
+            #     product_code=prod).aggregate(Sum('qty'))
 
-            if purchases_tot['qty__sum'] == None:
-                purchases_tot['qty__sum'] = 0
-            if sales_tot['qty__sum'] == None:
-                sales_tot['qty__sum'] = 0
+            # if purchases_tot['qty__sum'] == None:
+            #     purchases_tot['qty__sum'] = 0
+            # if sales_tot['qty__sum'] == None:
+            #     sales_tot['qty__sum'] = 0
 
-            if ((int(purchases_tot['qty__sum']) - int(sales_tot['qty__sum'])) >= int(qty)):
+            cursor = connection.cursor()
+            cursor.execute(
+                "SELECT SUM(qty) FROM system_purchases WHERE product_code_id='"+prod+"'")
+            purchases_tot = cursor.fetchall()
+            cursor.execute(
+                "SELECT SUM(qty) FROM system_sales WHERE product_code_id='"+prod+"'")
+            sales_tot = cursor.fetchall()
+
+            purchase_val = purchases_tot[0][0]
+            sales_val = sales_tot[0][0]
+
+            if purchase_val == None:
+                purchase_val = 0
+            if sales_val == None:
+                sales_val = 0
+
+            if (purchase_val - sales_val) >= int(qty):
                 customer_obj = Customers(
                     name=name, address=addr, phone_number=phone)
                 customer_obj.save()
