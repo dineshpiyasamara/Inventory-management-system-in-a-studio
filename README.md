@@ -6,3 +6,11 @@ The main scope of this project is to save time and avoid some mistakes when reco
 ## ER Diagram
 
 ![alt text](https://github.com/dineshpiyasamara/Inventory-management-system-in-a-studio/blob/master/Extra/er.jpg)
+
+## Relation Schema
+
+![alt text](https://github.com/dineshpiyasamara/Inventory-management-system-in-a-studio/blob/master/Extra/schema.jpg)
+
+## User Interface
+
+![alt text](https://github.com/dineshpiyasamara/Inventory-management-system-in-a-studio/blob/master/Extra/after_login.PNG)
