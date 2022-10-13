@@ -4,3 +4,13 @@ The inventory in a studio should be updated frequently. So, this system has been
 The main scope of this project is to save time and avoid some mistakes when recording purchases, selling items, and other services in a studio. I try to develop a pre-defined way to manage inventory through the system. It will be easy to maintain a competent and favorable procedure in a studio through this system.
 
 ## ER Diagram
+
+![alt text](https://github.com/dineshpiyasamara/Inventory-management-system-in-a-studio/blob/master/Extra/er.jpg)
+
+## Relation Schema
+
+![alt text](https://github.com/dineshpiyasamara/Inventory-management-system-in-a-studio/blob/master/Extra/schema.jpg)
+
+## User Interface
+
+![alt text](https://github.com/dineshpiyasamara/Inventory-management-system-in-a-studio/blob/master/Extra/after_login.PNG)
